@@ -16,7 +16,7 @@
                        th:text="'Курс: ' + ${as.getCourseName().getName()}"></p>
                     <p class="card-text" th:text="${as.getCommentary()}"></p>
                     <span th:text="'Тел: ' + ${as.getPhone()}"></span>
-                    <a href="#" class="btn btn-primary btn-sm">Подробнее</a>
+                    <a th:href="@{'/details/' + ${as.getId()}}" class="btn btn-primary btn-sm">Подробнее</a>
                 </div>
             </div>
         </div>
