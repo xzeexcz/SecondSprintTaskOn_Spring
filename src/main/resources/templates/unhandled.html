@@ -2,6 +2,7 @@
       layout:decorate="~{main.html}">
 <div layout:fragment="siteContent">
     <div class="row">
+        <h5 class="text-center text-success" th:if="${zayavki.isEmpty()}">*** НЕТ НЕОБРАБОТАННЫХ ЗАЯВОК ***</h5>
         <div class="col-md-6 mb-2"
              th:each="as : ${zayavki}">
             <div class="card">
