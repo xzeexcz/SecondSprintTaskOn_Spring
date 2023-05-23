@@ -27,7 +27,9 @@
                     </div>
                     <div class="row mt-2">
                         <div class="col-12">
-                            <input readonly th:value="${zayavka.getCourseName().getName()}" class="form-control">
+                            <input readonly
+                                   th:value="${zayavka.getCourseName().getName() + ' - ' + zayavka.getCourseName().getPrice() + ' USD.'}"
+                                   class="form-control">
                         </div>
                     </div>
                     <div class="row">
@@ -54,10 +56,9 @@
                         </div>
                     </div>
                     <input type="hidden" name="handle" th:value="${zayavka.getHandled()}">
-                    <div class="d-flex justify-content-between mt-3">
-                        <button type="submit" class="btn mt-1 btn-danger">Удалить заявку
-                        </button>
-                    </div>
+                    <input type="hidden" name="idshka" th:value="${zayavka.getId()}">
+                    <button type="submit" class="btn mt-1 btn-danger">Удалить заявку
+                    </button>
                 </form>
                 <form action="/change" method="post">
                     <input type="hidden" name="idshka" th:value="${zayavka.getId()}">

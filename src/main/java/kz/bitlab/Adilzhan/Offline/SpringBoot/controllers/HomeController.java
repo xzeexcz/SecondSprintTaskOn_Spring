@@ -60,10 +60,10 @@ public class HomeController {
                       @RequestParam(name = "request_course_id") Long id,
                       @RequestParam(name = "request_phone") String phone,
                       @RequestParam(name = "request_descr") String description) {
-        if ((name != null) || (id != null) || (phone != null) || (description != null)) {
+        if ((name != null) && (id != null) && (phone != null) && (description != null)) {
             ApplicationRequest applicationRequest = new ApplicationRequest();
             applicationRequest.setCommentary(description);
-            applicationRequest.setCourseName(new Courses(id, null));
+            applicationRequest.setCourseName(new Courses(id));
             applicationRequest.setPhone(phone);
             applicationRequest.setHandled(false);
             applicationRequest.setUserName(name);

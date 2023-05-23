@@ -18,5 +18,12 @@ public class Courses {
     private Long id;
     @Column(name = "t_course_name")
     private String name;
+    @Column(name = "t_courses_description")
+    private String description;
+    @Column(name = "t_courses_price")
+    private int price;
 
+    public Courses(Long id) {
+        this.id = id;
+    }
 }
