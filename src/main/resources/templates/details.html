@@ -1,0 +1,74 @@
+<html xmlns:th="http://thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{main.html}">
+<div layout:fragment="siteContent">
+    <div class="container d-flex justify-content-center align-items-center">
+        <div class="row">
+            <div class="col-12">
+                <h5 class="text-center text-danger" th:if="${!zayavka.getHandled()}">*** Новая необработанная
+                    заявка ***</h5>
+                <h5 class="text-center text-success" th:if="${zayavka.getHandled()}">Обработанная заявка</h5>
+                <form action="/delete" method="post" style="min-width: 670px; margin: 0 auto;">
+                    <div class="row">
+                        <div class="col-12">
+                            <label>ФИО :</label>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-12">
+                            <input type="text" class="form-control" name="request_name"
+                                   th:value="${zayavka.getUserName()}"
+                                   readonly>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <label>Курс:</label>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-12">
+                            <input readonly th:value="${zayavka.getCourseName().getName()}" class="form-control">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <label>Телефон:</label>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-12">
+                            <input type="text" class="form-control" th:value="${zayavka.getPhone()}" readonly>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <label>Комментрии :</label>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-12">
+                            <textarea class="form-control" rows="5"
+                                      readonly
+                                      th:text="${zayavka.getCommentary()}">
+                            </textarea>
+                        </div>
+                    </div>
+                    <input type="hidden" name="handle" th:value="${zayavka.getHandled()}">
+                    <div class="d-flex justify-content-between mt-3">
+                        <button type="submit" class="btn mt-1 btn-danger">Удалить заявку
+                        </button>
+                    </div>
+                </form>
+                <form action="/change" method="post">
+                    <input type="hidden" name="idshka" th:value="${zayavka.getId()}">
+                    <div class="d-flex justify-content-between mt-3">
+                        <button type="submit" class="btn btn-success mt-1" th:if="${!zayavka.getHandled()}">Обработать
+                            заявку
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</html>

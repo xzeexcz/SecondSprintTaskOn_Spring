@@ -1,0 +1,24 @@
+<html xmlns:th="http://thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{main.html}">
+<div layout:fragment="siteContent">
+    <div class="row">
+        <div class="col-md-6 mb-2"
+             th:each="as : ${zayavki}">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title d-inline mr-2"
+                        th:style="${as.getHandled()==false?'color:red;':''}"
+                        th:text="${as.getHandled()==false?'*(Новая) ':''}"></h5>
+                    <h5 class="card-title d-inline mr-2"
+                        th:text="'Заявка от ' + ${as.getUserName()}"></h5>
+                    <p class="text-secondary card-text"
+                       th:text="'Курс: ' + ${as.getCourseName().getName()}"></p>
+                    <p class="card-text" th:text="${as.getCommentary()}"></p>
+                    <span th:text="'Тел: ' + ${as.getPhone()}"></span>
+                    <a th:href="@{'/details/' + ${as.getId()}}" class="btn btn-primary btn-sm">Подробнее</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</html>
