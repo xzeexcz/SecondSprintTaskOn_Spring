@@ -2,8 +2,14 @@ package kz.bitlab.Adilzhan.Offline.SpringBoot.controllers;
 
 import kz.bitlab.Adilzhan.Offline.SpringBoot.entities.ApplicationRequest;
 import kz.bitlab.Adilzhan.Offline.SpringBoot.entities.Courses;
+import kz.bitlab.Adilzhan.Offline.SpringBoot.entities.Operators;
 import kz.bitlab.Adilzhan.Offline.SpringBoot.repositories.CoursesRepository;
+import kz.bitlab.Adilzhan.Offline.SpringBoot.repositories.OperatorsRepository;
 import kz.bitlab.Adilzhan.Offline.SpringBoot.repositories.RequestRepository;
+import kz.bitlab.Adilzhan.Offline.SpringBoot.services.ApplicationRequestService;
+import kz.bitlab.Adilzhan.Offline.SpringBoot.services.CoursesService;
+import kz.bitlab.Adilzhan.Offline.SpringBoot.services.OperatorsService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,11 +21,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.*;
 
 @Controller
+@RequiredArgsConstructor
 public class HomeController {
-    @Autowired
-    RequestRepository requestRepository;
-    @Autowired
-    CoursesRepository coursesRepository;
+    private final RequestRepository requestRepository;
+    private final CoursesRepository coursesRepository;
+    private final OperatorsRepository operatorsRepository;
+
+    private final ApplicationRequestService applicationRequestsService;
+    private final CoursesService coursesService;
+    private final OperatorsService operatorsService;
+
+    @GetMapping(value = "/404")
+    public String error() {
+        return "404";
+    }
 
     @GetMapping(value = "/")
     public String redirecting() {
@@ -28,30 +43,25 @@ public class HomeController {
 
     @GetMapping(value = "/home")
     public String home(Model model) {
-        List<ApplicationRequest> applicationRequests = requestRepository.findAll();
-        Collections.sort(applicationRequests, Comparator.comparing(ApplicationRequest::getHandled));
-        model.addAttribute("zayavki", applicationRequests);
+        model.addAttribute("zayavki", applicationRequestsService.getAllRequests());
         return "home";
     }
 
     @GetMapping(value = "/add")
     public String add(Model model) {
-        List<Courses> courses = coursesRepository.findAll();
-        model.addAttribute("cursi", courses);
+        model.addAttribute("cursi", coursesService.getAllCourses());
         return "addRequest";
     }
 
     @GetMapping(value = "/unhandled")
     public String unhandled(Model model) {
-        List<ApplicationRequest> applicationRequests = requestRepository.findAllByHandledFalse();
-        model.addAttribute("zayavki", applicationRequests);
+        model.addAttribute("zayavki", applicationRequestsService.getAllUnHandledRequest());
         return "unhandled";
     }
 
     @GetMapping(value = "/handled")
     public String handled(Model model) {
-        List<ApplicationRequest> applicationRequests = requestRepository.findAllByHandledTrue();
-        model.addAttribute("zayavki", applicationRequests);
+        model.addAttribute("zayavki", applicationRequestsService.getAllHandledRequest());
         return "handled";
     }
 
@@ -60,36 +70,41 @@ public class HomeController {
                       @RequestParam(name = "request_course_id") Long id,
                       @RequestParam(name = "request_phone") String phone,
                       @RequestParam(name = "request_descr") String description) {
-        if ((name != null) && (id != null) && (phone != null) && (description != null)) {
-            ApplicationRequest applicationRequest = new ApplicationRequest();
-            applicationRequest.setCommentary(description);
-            applicationRequest.setCourseName(new Courses(id));
-            applicationRequest.setPhone(phone);
-            applicationRequest.setHandled(false);
-            applicationRequest.setUserName(name);
-            requestRepository.save(applicationRequest);
+        if(applicationRequestsService.addRequest(name,phone,description,id)) {
             return "redirect:/home";
         } else {
             return "redirect:/404";
         }
+
     }
 
     @GetMapping(value = "/details/{idshka}")
     public String details(@PathVariable(name = "idshka") Long id, Model model) {
-        ApplicationRequest applicationRequest = requestRepository.getOne(id);
-        model.addAttribute("zayavka", applicationRequest);
+        model.addAttribute("zayavka", applicationRequestsService.getOneById(id));
+        model.addAttribute("operatori", operatorsService.getAllOperators() );
         return "details";
     }
 
     @PostMapping(value = "/delete")
     public String delete(@RequestParam(name = "idshka") Long id) {
-        requestRepository.deleteById(id);
+        applicationRequestsService.deleteRequest(id);
         return "redirect:/home";
     }
 
     @PostMapping(value = "/change")
-    public String change(@RequestParam(name = "idshka") Long id) {
-        requestRepository.updateStatusHandledTrue(id);
-        return "redirect:/home";
+    public String change(@RequestParam(name = "operator_id") Long[] id,
+                         @RequestParam(name = "idshka") Long ids) {
+            if (applicationRequestsService.change(id, ids)) {
+                return "redirect:/details/" + applicationRequestsService.getOneById(ids).getId();
+            } else {
+                return "redirect:/404";
+            }
+    }
+
+    @PostMapping(value = "/delete-operator")
+    public String delete(@RequestParam(name = "operator_id") Long[] id,
+                         @RequestParam(name = "idshka") Long id1) {
+        operatorsService.deleteOperator(id1, id);
+        return "redirect:/details/"+applicationRequestsService.getOneById(id1).getId();
     }
 }

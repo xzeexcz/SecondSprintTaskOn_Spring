@@ -4,6 +4,8 @@ package kz.bitlab.Adilzhan.Offline.SpringBoot.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "t_requests")
 @Getter
@@ -28,6 +30,8 @@ public class ApplicationRequest {
     private String phone;
     @Column(name = "r_handler")
     private boolean handled;
+    @ManyToMany
+    private List<Operators> operatorsList;
 
     public boolean getHandled() {
         return handled;

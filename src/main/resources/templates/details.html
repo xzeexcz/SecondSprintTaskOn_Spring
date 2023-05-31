@@ -60,14 +60,68 @@
                     <button type="submit" class="btn mt-1 btn-danger">Удалить заявку
                     </button>
                 </form>
-                <form action="/change" method="post">
+                <table class="table mt-2" th:if="${zayavka.getOperatorsList()!=null && zayavka.getOperatorsList().size() > 0}">
+                    <form th:action="@{'/delete-operator'}" method="post">
+                    <thead>
                     <input type="hidden" name="idshka" th:value="${zayavka.getId()}">
-                    <div class="d-flex justify-content-between mt-3">
-                        <button type="submit" class="btn btn-success mt-1" th:if="${!zayavka.getHandled()}">Обработать
-                            заявку
-                        </button>
+                    <tr>
+                        <th>Удалить :</th>
+                        <th>Имя:</th>
+                        <th>Фамилия:</th>
+                        <th>Департамент:</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each ="it : ${zayavka.getOperatorsList()}">
+                        <td><input type="checkbox" name="operator_id" th:value="${it.getId()}"></td>
+                        <td th:text ="${it.getName()}"></td>
+                        <td th:text ="${it.getSurname()}"></td>
+                        <td th:text ="${it.getDepartment()}"></td>
+                    </tr>
+                    </tbody>
+                        <button class="btn btn-danger mt-2" type="submit" th:if="${zayavka.getOperatorsList()!=null && zayavka.getOperatorsList().size() > 0}">Удалить оператора</button>
+                    </form>
+                </table>
+                <a type="button" th:if="${!zayavka.getHandled()}" class="btn btn-success mt-1" data-bs-toggle="modal" data-bs-target="#editRequest">
+                    Обработать заявку
+                </a>
+                <div class="modal fade" id="editRequest" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <form action="/change" method="post">
+                                <input type="hidden" name="idshka" th:value="${zayavka.getId()}">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5">Выберите оператора</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <table class="table mt-2">
+                                        <thead>
+                                        <tr>
+                                            <th>Выбрать :</th>
+                                            <th>Имя:</th>
+                                            <th>Фамилия:</th>
+                                            <th>Департамент:</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each ="it : ${operatori}">
+                                            <td><input type="checkbox" name="operator_id" th:value="${it.getId()}"></td>
+                                            <td th:text ="${it.getName()}"></td>
+                                            <td th:text ="${it.getSurname()}"></td>
+                                            <td th:text ="${it.getDepartment()}"></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                                    <button type="submit" class="btn btn-danger">Назначить</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
-                </form>
+                </div>
             </div>
         </div>
     </div>

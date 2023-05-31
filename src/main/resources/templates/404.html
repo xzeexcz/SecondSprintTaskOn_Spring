@@ -1,0 +1,15 @@
+<html xmlns:th="http://thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{main.html}">
+<div layout:fragment="siteContent">
+  <div class="d-flex align-items-center justify-content-center vh-100">
+    <div class="text-center">
+      <h1 class="display-1 fw-bold">404</h1>
+      <p class="fs-3"> <span class="text-danger">УПС!</span> Страница не найдена или что-то пошло не так.</p>
+      <p class="lead">
+        Страница, которую ты ищещь не существует!
+      </p>
+      <a th:href="@{'/home'}" class="btn btn-primary">Вернутся домой.</a>
+    </div>
+  </div>
+</div>
+</html>
